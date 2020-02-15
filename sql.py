@@ -1,11 +1,13 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
 import logging
+import datetime
+
 from contextlib import contextmanager
 from jsonpickle import encode, decode
 from typing import Any
 from sqlalchemy import (
-    Table, MetaData, Column, Integer, String,
+    Table, MetaData, Column, Integer, String, DateTime,
     ForeignKey, create_engine, select)
 from sqlalchemy.orm import mapper, sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
@@ -114,6 +116,7 @@ class SQLPlugin(StoragePluginBase):
         table = Table(namespace, self._metadata,
                       Column('key', String(767), primary_key=True),
                       Column('value', String(32768)),
+                      Column('created_at', DateTime, default=datetime.datetime.utcnow),
                       extend_existing=True)
 
         class NewKV(KV):
